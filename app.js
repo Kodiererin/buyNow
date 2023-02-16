@@ -118,10 +118,10 @@ app.get('/search',function(req,res){
 
 
 app.post('/search',async function(req,res){
-    console.log(req.body.searchItem);
-    const myitem = await item.find({sellerID: req.body.searchItem});
-    console.log(myitem);
-    res.render('buyer',{getData : myitem});
+   console.log(req.body.searchItem);
+   const myitem = await item.find({name: req.body.searchItem});
+   console.log(myitem);
+   res.render('buyer',{getData : myitem});
 })
 
 app.post('/buynow/:id' , function(req,res){
@@ -145,7 +145,7 @@ app.get('/addData',function(req,res){
 app.post('/updateData' , function(req,res){
     console.log(req.body);
     res.send('<h1>The Data has been received.</h1>');
-    const newProduct = new items({
+    const newProduct = new item({
         name : req.body.productName,
         innerItem : {
             sellerName : req.body.sellerName,
