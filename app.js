@@ -118,11 +118,32 @@ app.get('/search',function(req,res){
 
 
 app.post('/search',async function(req,res){
-   console.log(req.body.searchItem);
-   const myitem = await item.find({name: req.body.searchItem});
-   console.log(myitem);
-   res.render('buyer',{getData : myitem});
+const myItem = req.body.searchItem;
+   console.log(myItem);
+   if(myItem!=null && myItem!=undefined){
+        const myitem =  item.findOne({name: myItem},function(err,result){
+            console.log(result);
+            if(!err){
+                if(result){
+                    console.log(result);
+                    res.render('buyer',{getData : result});
+                }
+                else{
+                    res.render('productnotfound');
+                }
+            }
+    });
+   }
 })
+// app.post('/search',async function(req,res){
+//    console.log(req.body.searchItem);
+//    const myitem =  await item.findOne({name: req.body.searchItem});
+//    console.log(myitem);
+//      res.render('buyer',{getData : myitem});
+// })
+
+
+
 
 app.post('/buynow/:id' , function(req,res){
     console.log(req.params);
@@ -130,6 +151,7 @@ app.post('/buynow/:id' , function(req,res){
         if(!err && result){
             console.log(result);
         }
+        
     });
 
 })
