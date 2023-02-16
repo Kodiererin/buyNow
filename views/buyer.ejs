@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>To Do List</title>
+</head>
+<body>
+    <div class="product-name"></div>
+    <h1><%=getData[0].name%></h1>
+    <% for (var i = 0; i < getData[0].innerItem.length; i++) { %>
+        <div class="product-container" >        
+            <div class="product-details"><%=getData[0].innerItem[i].details %></div>
+            <div class="product-price"><%= getData[0].innerItem[i].price %></div>
+            <div class="seller-info">
+              <div class="seller-name"><%= getData[0].innerItem[i].sellerName %></div>
+              <div class="seller-url"><%= getData[0].innerItem[i].sellerUrl %></div>
+            </div>
+            <div class="product-reviews">
+                <table>
+                <% for (var j = 0; j < getData[0].innerItem[i].reviews.length; j++) { %>
+                    <tr><td><%= getData[0].innerItem[i].reviews[j] %></td></tr>
+                    <% } %>
+                </table>
+            </div>
+            <form action="contactSeller" method="post" class="item">
+                <button class="buy-now">Buy Now</button>
+                <div class="product-buttons">
+                <button class="bargain">Contact Seller</button>
+                </div>
+            </form>
+          </div>
+    <% } %>
+    
+
+</body>
+<footer> Copyright 2022 Ujjwal Kumar</footer>
+</html>
