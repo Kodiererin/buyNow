@@ -19,14 +19,18 @@ const itemSchema = new mongoose.Schema({
         type : String,
         boolean : true,
     },
-    sellerUrl : {
+    sellerID : {
         type : String,
         required : true,
     },
     productDetails : {
         type : String,
     },
-    reviews : {
+    productreviews : {
+        type : Array,
+        default : [String],
+    },
+    sellerreviews : {
         type : Array,
         default : [String],
     },
@@ -44,29 +48,55 @@ const item = mongoose.model('item',new mongoose.Schema({
     innerItem : [itemSchema],
 }));
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const seller = mongoose.model('seller',new mongoose.Schema({
+    name : {
+        type : String,
+    },
+    purchases : {
+        type : String,
+    }
+}))
+
+const buyer = mongoose.model('buyer',new mongoose.Schema({
+    name : {
+        type : String,
+    },
+    cart : {
+        type : String,
+    }
+}))
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/',async function(req,res){    
     const data = new item({
         name : 'Pen',
         innerItem :[{
             productDetails : 'Blue Colour Pen',
-            reviews :['Great Ink' , 'Good Milege'],
+            productreviews :['Great Ink' , 'Good Milege'],
+            sellerreviews :['Delivery On time' , 'Great Pricing'],
             price : 21.99,
-            sellerName : 'XYZSeller',
-            sellerUrl : 'www.seller.com'
+            sellerName : 'GadaStationary',
+            sellerID : 'bnow01'
+            
         },
         {
             productDetails : 'Red Colour Pen',
-            reviews :['Great Ink' , 'Good Milege'],
+            productreviews :['Great Ink' , 'Good Milege'],
+            sellerreviews :['Delivery On time' , 'Great Pricing'],
+            price : 21.99,
             price : 25.99,
-            sellerName : 'XYZSeller',
-            sellerUrl : 'www.seller.com'
+            sellerName : 'ElephantStationary',
+            sellerID : 'bnow02'
         },
         {
             productDetails : 'Black Colour Pen',
-            reviews :['Great Ink' , 'Good Milege'],
+            productreviews :['Great Ink' , 'Good Milege'],
+            sellerreviews :['Delivery On time' , 'Great Pricing'],
+            price : 21.99,
             price : 19.99,
-            sellerName : 'XYZSeller',
-            sellerUrl : 'www.seller.com'
+            sellerName : 'ABC Stationary',
+            sellerID : 'bnow03'
         }]
     })
 
@@ -80,6 +110,54 @@ app.get('/',async function(req,res){
         console.log(getData);
         res.render('buyer',{getData : getData})
     });
+})
+
+app.get('/search',function(req,res){
+    res.render('search')
+})
+
+
+app.post('/search',async function(req,res){
+    console.log(req.body.searchItem);
+    const myitem = await item.find({sellerID: req.body.searchItem});
+    console.log(myitem);
+    res.render('buyer',{getData : myitem});
+})
+
+app.post('/buynow/:id' , function(req,res){
+    console.log(req.params);
+    item.findOne({name : req.params._id},function(err,result){
+        if(!err && result){
+            console.log(result);
+        }
+    });
+
+})
+
+app.get('/seller',function(req,res){
+    res.render('seller');
+})
+
+app.get('/addData',function(req,res){
+    res.render('addData');
+})
+
+app.post('/updateData' , function(req,res){
+    console.log(req.body);
+    res.send('<h1>The Data has been received.</h1>');
+    const newProduct = new items({
+        name : req.body.productName,
+        innerItem : {
+            sellerName : req.body.sellerName,
+            sellerID : req.body.sellerId,
+            productDetails : req.body.productDetails,
+            price : req.body.productPrice,
+        }})
+        newProduct.save(function(err,accept){
+            if(!err && accept){
+                console.log(accept);
+            }
+        })
 })
 
 

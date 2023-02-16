@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Homepage</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" integrity="sha512-BZXHJCFDp48LPyC4gkz+GZJemBqUI3q9F9/CZ+90bFByaEtJ7OEmOyLQV7aPYjKxEuV7GJ9ZAg+V7HzxG17uNQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+      /* Custom CSS */
+      body {
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+      }
+      
+      .header {
+        background-color: #343a40;
+        color: white;
+        padding: 10px;
+      }
+      
+      .search-container {
+        display: flex;
+        justify-content: center;
+        margin: 50px 0;
+      }
+      
+      .search-container input[type="text"] {
+        width: 50%;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .search-container button[type="submit"] {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 20px;
+        margin-left: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      
+      .search-container button[type="submit"]:hover {
+        background-color: #0069d9;
+      }
+      
+      .search-results {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      
+      .search-result {
+        margin: 20px;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        max-width: 300px;
+      }
+      
+      .search-result h3 {
+        margin-top: 0;
+        font-size: 18px;
+      }
+      
+      .search-result p {
+        margin-bottom: 0;
+      }
+      
+      @media (max-width: 576px) {
+        .search-container input[type="text"] {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="text-center">Search Homepage</h1>
+    </header>
+    
+    <div class="container">
+      <div class="search-container">
+        <form class="d-flex" action="/search" method="POST" >
+          <input class="form-control" type="text" placeholder="Search..." class="searchItem">
+          <button class="btn btn-primary" type="submit">Search</button>
+        </form>
+      </div>
+      
+      </div>
+      </body>
+      </html>

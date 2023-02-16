@@ -16,21 +16,30 @@
             <div class="product-price"><%= getData[0].innerItem[i].price %></div>
             <div class="seller-info">
               <div class="seller-name"><%= getData[0].innerItem[i].sellerName %></div>
-              <div class="seller-url"><%= getData[0].innerItem[i].sellerUrl %></div>
+              <div class="seller-url"><%= getData[0].innerItem[i].sellerID %></div>
             </div>
             <div class="product-reviews">
                 <table>
-                <% for (var j = 0; j < getData[0].innerItem[i].reviews.length; j++) { %>
-                    <tr><td><%= getData[0].innerItem[i].reviews[j] %></td></tr>
+                <% for (var j = 0; j < getData[0].innerItem[i].productreviews.length; j++) { %>
+                    <tr><td><%= getData[0].innerItem[i].productreviews[j] %></td></tr>
                     <% } %>
                 </table>
             </div>
-            <form action="contactSeller" method="post" class="item">
+            <div class="seller-reviews">
+                <table>
+                <% for (var j = 0; j < getData[0].innerItem[i].sellerreviews.length; j++) { %>
+                    <tr><td><%= getData[0].innerItem[i].sellerreviews[j] %></td></tr>
+                    <% } %>
+                </table>
+            </div>
+            <div class="product-buttons">
+            <form action="/buynow/<%=getData[0].innerItem[i] %>" method="post" class="item">
                 <button class="buy-now">Buy Now</button>
-                <div class="product-buttons">
-                <button class="bargain">Contact Seller</button>
-                </div>
             </form>
+            <form action="/contact/<%=getData[0].innerItem[i].sellerName %>" method="post" class="item">
+                <button class="bargain">Contact Seller</button>            </form>
+             </form>
+        </div>
           </div>
     <% } %>
     

@@ -1,0 +1,136 @@
+@import "compass/css3";
+
+/* =============================================================================
+Global Variables
+========================================================================== */
+// Colours
+$googleBodyBackground: #FFF;
+$googleBorderColour: #CCC;
+$googleTextColour: lighten(invert($googleBodyBackground), 27);
+$googleBorderColour: lighten(invert($googleBodyBackground), 45);
+$googleButtonColour: #f5f5f5;
+$googleButtonBorder: darken($googleButtonColour, 10);
+$googleButtonHoverBorderColour: darken($googleButtonColour, 18);
+$googleButtonHoverColour: darken($googleTextColour, 13);
+
+// Logo Colours
+$googleLogoColourBlue: #0140CA;
+$googleLogoColourRed: #DD1812;
+$googleLogoColourYellow: #FCCA03;
+$googleLogoColourGreen: #16A61E;
+
+// Logo Font
+/*
+Catull is probably not on most computers, as it costs over $200 US: http://www.myfonts.com/fonts/berthold/catull-bq/
+*/
+$googleMainFont: "Catull", "Georgia";
+
+// Media Queries
+$googleMaxWidth: 767px;
+
+/* =============================================================================
+Helpers
+========================================================================== */
+/* Hide only visually, but have it available for screenreaders: by Jon Neal.
+  www.webaim.org/techniques/css/invisiblecontent/  &  j.mp/visuallyhidden */
+%visuallyhidden {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	left: -500%;
+}
+
+// Logo colour helper classes
+.blue {
+	color: $googleLogoColourBlue;
+}
+
+.red {
+	color: $googleLogoColourRed;
+}
+
+.yellow {
+	color: $googleLogoColourYellow;
+}
+
+.green {
+	color: $googleLogoColourGreen;
+}
+
+body {
+	background: $googleBodyBackground;
+}
+
+/* =============================================================================
+Main Styles
+========================================================================== */
+form {
+	&#main-google-search {
+		//only match specific search form
+		margin: 5% auto;
+		text-align: center;
+		legend {
+			@extend %visuallyhidden;
+		}
+		input[type="search"] {
+			min-width: 50%;
+			margin: 3em 0;
+			font-size: 1.5em;
+			padding: 0.2em 0.5em;
+			border: 1px solid lighten($googleTextColour, 50);
+			@include transition(0.5s border-color ease);
+			&:hover {
+				border-color: $googleBorderColour;
+			}
+			&:focus {
+				border-color: $googleLogoColourBlue;
+				outline: none;
+			}
+		}
+		.logo {
+			display: block;
+			font-family: $googleMainFont;
+			font-size: 9em;
+			@include text-shadow(0 1px $googleTextColour);
+		}
+	}
+	fieldset {
+		border: 0;
+	}
+}
+
+// buttons
+button {
+	@include inline-block();
+	font-weight: bold;
+	padding: 0.5em 0.8em;
+	text-align: center;
+	@include border-radius(0.2em);
+	@include user-select(none);
+	cursor: pointer;
+	@include background(linear-gradient($googleButtonColour, darken($googleButtonColour, 3)));
+	border: 1px solid $googleButtonBorder;
+	@include transition(0.2s box-shadow, color, border-color ease);
+	&:hover {
+		border-color: $googleButtonHoverBorderColour;
+		color: $googleButtonHoverColour;
+		@include box-shadow(0 1px 0 fade-out(invert($googleBodyBackground), 0.85));
+	}
+}
+
+/* =============================================================================
+Media Queries
+========================================================================== */
+@media(max-width: $googleMaxWidth) {
+	input[type="search"] {
+		width: 100%;
+	}
+	.logo {
+		font-size: 6em !important;
+	}
+}
