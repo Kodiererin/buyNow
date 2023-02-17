@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
@@ -88,6 +87,7 @@
     <div class="container">
       <div class="search-container">
         <form class="d-flex" action="/search" method="POST" >
+          <input type="text" name="userId" value="<%=userId %>" hidden>
           <input class="form-control" type="text" placeholder="Search..." name="searchItem">
           <button class="btn btn-primary" type="submit" value="submit">Search</button>
         </form>

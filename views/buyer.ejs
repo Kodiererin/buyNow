@@ -53,7 +53,7 @@
     <div class="product-name"></div>
     <h1><%=ItemName%></h1>
     <% for (var i = 0; i < getData.length; i++) { %>
-      <div class="product-container" >        
+      <div class="product-container" >    
           <div class="product-details"><%=getData[i].details %></div>
           <div class="product-price"><%= getData[i].price %></div>
           <div class="seller-info">
@@ -75,7 +75,8 @@
               </table>
           </div>
           <div class="product-buttons">
-          <form action="/<%=getData[i]._id%>" method="POST" class="item">
+            <input type="text" name="userId" id="" value="<%=getUserId%>" hidden>
+          <form action="/<%=getData[i]._id%>/<%=getUserId%>" method="POST" class="item">
               <button class="buy-now" value="<%=getData[i]._id%>" type="submit">Buy Now</button>
           </form>
           <form action="/contact/<%=getData[i].sellerName %>" method="post" class="item">

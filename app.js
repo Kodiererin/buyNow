@@ -80,14 +80,15 @@ app.get('/register',function(req,res){
         orders : ['112345678' , 'abc12345' , '11112dd121'],
     });
 
-    ujjwal.save(function(err,succ){
-        if(!err && succ){
-            console.log(succ);
-        }
-    })
+    // ujjwal.save(function(err,succ){
+    //     if(!err && succ){
+    //         console.log(succ);
+    //     }
+    // })
 })
 
 
+// //////////////////////ByDefaultLoginFormOpens////////////////////////////
 app.get('/',async function(req,res){
     
     res.render('login');
@@ -115,6 +116,23 @@ app.get('/',async function(req,res){
     // });
 })
 
+app.post('/login',function(req,res){
+    console.log(req.body);
+    const email = req.body.email;
+    const password = req.body.password;
+
+    user.findOne({email : email , password : password}, '_id',function(err,accept){
+        if(!err && accept){
+            console.log("User Found");
+            const userId = accept.id;
+            // res.render('search/'+)
+            // console.log(userId);
+            res.render('search',{userId})
+        }
+    })
+
+})
+
 
 
 app.post('/regis',function(req,res){
@@ -125,14 +143,26 @@ app.post('/regis',function(req,res){
     }
 })
 
+app.post('/registerNew',function(req,res){
+    res.render('registration')
+})
 
+//////////////////////////////////////////////////////////////////////
 app.get('/search',function(req,res){
-    res.render('search')
-
+    const userId= req.params.id;
+    // res.render('search',{userId})
+    // console.log(req.body);
+    console.log(req.params);
+    // res.redirect(`/search?id=${userId}`);
 })
 
 //    Yha se Error ko dekho
 app.post('/search',async function(req,res){
+    // console.log(userId);
+    // console.log(req.body);
+
+    const getUserId = req.body.userId;
+
 const myItem = req.body.searchItem;
    console.log(myItem);
    if(myItem!=null && myItem!=undefined){
@@ -141,7 +171,7 @@ const myItem = req.body.searchItem;
             if(!err){
                 if(result!=[] || result!=null || result!=undefined){
                     console.log(result);
-                    res.render('buyer',{ItemName : myItem , getData : result});
+                    res.render('buyer',{ItemName : myItem , getData : result , getUserId});
                 }
                 else{
                     res.render('productnotfound');
@@ -184,13 +214,21 @@ app.post('/updateData' , function(req,res){
 
 app.get('/buynow',function(req,res){
     res.render('buynow');
+    console.log(req.body);
 })
 
 
-app.post('/:id',async function(req,res){
-    let getId = req.params.id;
+app.post('/:productId/:userId',async function(req,res){
+    let getId = req.params.productId;
     getId = getId+"";
-    console.log(getId);
+
+    let userId = req.params.userId;
+    userId = userId+"";
+
+    console.log("Product Id "+getId);
+    console.log("User ID "+userId);
+
+
     const getData =item.findById(getId,function(err,result){
         console.log(result.name);
         console.log(result);
