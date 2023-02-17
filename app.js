@@ -75,16 +75,16 @@ const seller = mongoose.model('seller' , new mongoose.Schema({
             customerId : {
                 type : String,
             },
+            customerPhone : {
+                type : String,
+            },
+            customerAddress : {
+                type : String,
+            }
         }
     ],
     sellerReview : [{type : String}],
 }));
-
-
-// Setting a temporary seller
-
-
-
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -259,15 +259,21 @@ app.post('/:productId/:userId',async function(req,res){
 })
 
 app.post('/order/:productId/:userId/:sellerID' , function(req,res){
-    res.send('<h1>Your Order is successful</h1>');
+    // res.send('<h1>Your Order is successful</h1>');
     let myproductID = req.params.productId+"";
     let mycustomerID = req.params.userId+"";
     let mysellerID = req.params.sellerID+"";
 
-    console.log("Product Id "+myproductID);
-    console.log("User ID "+mycustomerID);
-    console.log("Seller Id "+mysellerID);
+    // console.log("Product Id "+myproductID);
+    // console.log("User ID "+mycustomerID);
+    // console.log("Seller Id "+mysellerID);
 
+    console.log(req.body);
+
+    let address = req.body.address;
+        address = address+"";
+    let phonenumber = req.body.phonenumber;
+        phonenumber = phonenumber+"";
 
     const tempSeller = new seller({
         name : "Jagmohan",
@@ -294,6 +300,8 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
     const orderData = {
         productId : myproductID,
         customerId : mycustomerID,
+        customerPhone : phonenumber,
+        customerAddress : address,
     }
     console.log(orderData);
 
@@ -301,15 +309,16 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
         { sellerId : mysellerID }, 
         { $push: { orders: orderData  } },
        function (error, success) {
-             if (error) {
+             if (error || !success) {
                  console.log(error);
              } else {
                  console.log(success+"Seller Data Updated");
+                res.render('orderSuccess');
              }
          });
 
 
-    console.log(req.body);
+    // console.log(req.body);
 
 
 })

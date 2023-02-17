@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Reviews</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+    form {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Reviews</h1>
+    
+    <form>
+      <h2>Seller Review</h2>
+      <div class="form-group">
+        <label for="seller-name">Seller Name</label>
+        <input type="text" class="form-control" id="seller-name" required>
+      </div>
+      <div class="form-group">
+        <label for="seller-review">Seller Review</label>
+        <textarea class="form-control" id="seller-review" rows="3" required></textarea>
+      </div>
+      
+      <h2>Product Review</h2>
+      <div class="form-group">
+        <label for="product-name">Product Name</label>
+        <input type="text" class="form-control" id="product-name" required>
+      </div>
+      <div class="form-group">
+        <label for="product-review">Product Review</label>
+        <textarea class="form-control" id="product-review" rows="3" required></textarea>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    
+  </div>
+  
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</body>
+</html>
