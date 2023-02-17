@@ -24,7 +24,7 @@
     <h1>Shipping Details</h1>
     <div class="row">
       <div class="col-md-6 offset-md-3">
-        <form accept="/order" method="POST">
+        <form action="/order/<%=getId%>/<%=userId%>/<%=product.sellerID%>" method="POST">
           <div class="form-group">
             <label for="item-name">Name</label>
             <input type="text" class="form-control" id="name" placeholder="Enter Your name">

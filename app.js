@@ -63,6 +63,28 @@ const user = mongoose.model('user',new mongoose.Schema({
     }
 }));
 
+const seller = mongoose.model('seller' , new mongoose.Schema({
+    name : {type : String ,},
+    sellerId : {type : String , unique : true },
+    password : {type : String },
+    orders : [
+        {
+            productId : {
+                type : String
+            },
+            customerId : {
+                type : String,
+            },
+        }
+    ],
+    sellerReview : [{type : String}],
+}));
+
+
+// Setting a temporary seller
+
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -232,8 +254,64 @@ app.post('/:productId/:userId',async function(req,res){
     const getData =item.findById(getId,function(err,result){
         console.log(result.name);
         console.log(result);
-        res.render('buynow',{product : result})
+        res.render('buynow',{product : result , getId , userId})
     });
+})
+
+app.post('/order/:productId/:userId/:sellerID' , function(req,res){
+    res.send('<h1>Your Order is successful</h1>');
+    let myproductID = req.params.productId+"";
+    let mycustomerID = req.params.userId+"";
+    let mysellerID = req.params.sellerID+"";
+
+    console.log("Product Id "+myproductID);
+    console.log("User ID "+mycustomerID);
+    console.log("Seller Id "+mysellerID);
+
+
+    const tempSeller = new seller({
+        name : "Jagmohan",
+        sellerId : "bnow001",
+    })
+
+    // tempSeller.save(function(err,result){
+    //     if(!err && result){
+    //         console.log("Data Saved");
+    //     }
+    // });
+
+    // Starting the Search operation for items Entry.
+
+    seller.find({sellerId : mysellerID} , function(err,result){
+        if(!err && result){
+            console.log("Seller Found");
+            console.log(result);
+        }
+        else{
+            console.log("Seller Not found");
+        }
+    })
+    const orderData = {
+        productId : myproductID,
+        customerId : mycustomerID,
+    }
+    console.log(orderData);
+
+    seller.findOneAndUpdate(
+        { sellerId : mysellerID }, 
+        { $push: { orders: orderData  } },
+       function (error, success) {
+             if (error) {
+                 console.log(error);
+             } else {
+                 console.log(success+"Seller Data Updated");
+             }
+         });
+
+
+    console.log(req.body);
+
+
 })
 
 
