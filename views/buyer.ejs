@@ -75,8 +75,8 @@
               </table>
           </div>
           <div class="product-buttons">
-          <form action="/buynow/<%=getData[i] %>" method="post" class="item">
-              <button class="buy-now">Buy Now</button>
+          <form action="/<%=getData[i]._id%>" method="POST" class="item">
+              <button class="buy-now" value="<%=getData[i]._id%>" type="submit">Buy Now</button>
           </form>
           <form action="/contact/<%=getData[i].sellerName %>" method="post" class="item">
               <button class="bargain">Contact Seller</button>            </form>

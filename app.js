@@ -92,10 +92,10 @@ app.post('/search',async function(req,res){
 const myItem = req.body.searchItem;
    console.log(myItem);
    if(myItem!=null && myItem!=undefined){
-        const myitem =  item.find({name: myItem},function(err,result){
+        const getitem =  item.find({name: myItem},function(err,result){
             console.log(result);
             if(!err){
-                if(result){
+                if(result!=[] || result!=null || result!=undefined){
                     console.log(result);
                     res.render('buyer',{ItemName : myItem , getData : result});
                 }
@@ -112,20 +112,6 @@ const myItem = req.body.searchItem;
 //    console.log(myitem);
 //      res.render('buyer',{getData : myitem});
 // })
-
-
-
-
-app.post('/buynow/:id' , function(req,res){
-    console.log(req.params);
-    item.findOne({name : req.params._id},function(err,result){
-        if(!err && result){
-            console.log(result);
-        }
-        
-    });
-
-})
 
 app.get('/seller',function(req,res){
     res.render('seller');
@@ -150,6 +136,21 @@ app.post('/updateData' , function(req,res){
                 console.log(accept);
             }
         })
+})
+
+app.get('/buynow',function(req,res){
+    res.render('buynow');
+})
+
+
+app.post('/:id',async function(req,res){
+    let getId = req.params.id;
+    getId = getId+"";
+    console.log(getId);
+    const getData =item.findOne({getId},function(err,result){
+        console.log(result);
+        res.render('buynow',{product : result})
+    });
 })
 
 
