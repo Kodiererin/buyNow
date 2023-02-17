@@ -12,9 +12,13 @@ async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/buyNowitems',{useNewUrlParser : true}); 
     console.log("Database Connected");
 }
-mongoose.set('strictQuery', false);
+mongoose.set('strictQuery', true);
 
-const itemSchema = new mongoose.Schema({
+const item = mongoose.model('item',new mongoose.Schema({
+    name : {
+        type : String,
+        uppercase : true,
+    },
     sellerName : {
         type : String,
         boolean : true,
@@ -39,28 +43,15 @@ const itemSchema = new mongoose.Schema({
         minimum : 0,
         required : true,
     },
-});
-
-const item = mongoose.model('item',new mongoose.Schema({
-    name : {
-        type : String,
-    },
-    innerItem : [itemSchema],
 }));
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const seller = mongoose.model('seller',new mongoose.Schema({
-    name : {
-        type : String,
-    },
-    purchases : {
-        type : String,
-    }
-}))
+
 
 const buyer = mongoose.model('buyer',new mongoose.Schema({
     name : {
         type : String,
+        uppercase : true,
     },
     cart : {
         type : String,
@@ -70,8 +61,7 @@ const buyer = mongoose.model('buyer',new mongoose.Schema({
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 app.get('/',async function(req,res){    
     const data = new item({
-        name : 'Pen',
-        innerItem :[{
+            name : 'Pen',
             productDetails : 'Blue Colour Pen',
             productreviews :['Great Ink' , 'Good Milege'],
             sellerreviews :['Delivery On time' , 'Great Pricing'],
@@ -79,26 +69,7 @@ app.get('/',async function(req,res){
             sellerName : 'GadaStationary',
             sellerID : 'bnow01'
             
-        },
-        {
-            productDetails : 'Red Colour Pen',
-            productreviews :['Great Ink' , 'Good Milege'],
-            sellerreviews :['Delivery On time' , 'Great Pricing'],
-            price : 21.99,
-            price : 25.99,
-            sellerName : 'ElephantStationary',
-            sellerID : 'bnow02'
-        },
-        {
-            productDetails : 'Black Colour Pen',
-            productreviews :['Great Ink' , 'Good Milege'],
-            sellerreviews :['Delivery On time' , 'Great Pricing'],
-            price : 21.99,
-            price : 19.99,
-            sellerName : 'ABC Stationary',
-            sellerID : 'bnow03'
-        }]
-    })
+        });
 
     // data.save(function(err,succ){
     //     if(!err && succ){
@@ -106,27 +77,27 @@ app.get('/',async function(req,res){
     //     }
     // });
 
-    const myData = item.find({name : 'Pen'},function(err,getData){
-        console.log(getData);
-        res.render('buyer',{getData : getData})
-    });
+    // const myData = item.find({name : 'Pen'},function(err,getData){
+    //     console.log(getData);
+    //     res.render('buyer',{getData : getData})
+    // });
 })
 
 app.get('/search',function(req,res){
     res.render('search')
 })
 
-
+//    Yha se Error ko dekho
 app.post('/search',async function(req,res){
 const myItem = req.body.searchItem;
    console.log(myItem);
    if(myItem!=null && myItem!=undefined){
-        const myitem =  item.findOne({name: myItem},function(err,result){
+        const myitem =  item.find({name: myItem},function(err,result){
             console.log(result);
             if(!err){
                 if(result){
                     console.log(result);
-                    res.render('buyer',{getData : result});
+                    res.render('buyer',{ItemName : myItem , getData : result});
                 }
                 else{
                     res.render('productnotfound');
@@ -168,13 +139,12 @@ app.post('/updateData' , function(req,res){
     console.log(req.body);
     res.send('<h1>The Data has been received.</h1>');
     const newProduct = new item({
-        name : req.body.productName,
-        innerItem : {
+            name : req.body.productName,
             sellerName : req.body.sellerName,
             sellerID : req.body.sellerId,
             productDetails : req.body.productDetails,
             price : req.body.productPrice,
-        }})
+        })
         newProduct.save(function(err,accept){
             if(!err && accept){
                 console.log(accept);
