@@ -14,7 +14,7 @@ async function main() {
 }
 mongoose.set('strictQuery', true);
 
-const item = mongoose.model('item',new mongoose.Schema({
+const item = mongoose.model('item' ,new mongoose.Schema({
     name : {
         type : String,
         uppercase : true,
@@ -45,20 +45,49 @@ const item = mongoose.model('item',new mongoose.Schema({
     },
 }));
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////-Creating-Users-Data//////////////////////////////////////////////////////////////////////
 
-
-const buyer = mongoose.model('buyer',new mongoose.Schema({
+const user = mongoose.model('user',new mongoose.Schema({
     name : {
         type : String,
-        uppercase : true,
     },
-    cart : {
+    email : {
         type : String,
+    },
+    password : {
+        type : String,
+    },
+    orders : {
+        type : Array,
+        default : [],
     }
-}))
+}));
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// name , email , password , 
+// Registration Form
+app.get('/register',function(req,res){
+    res.render('registration');
+    console.log(req.body);
+
+    const ujjwal = new user({
+        name : 'Ujjwal',
+        email : 'ujjwal@gmail.com',
+        password : 'abc123',
+        orders : ['112345678' , 'abc12345' , '11112dd121'],
+    });
+
+    ujjwal.save(function(err,succ){
+        if(!err && succ){
+            console.log(succ);
+        }
+    })
+})
+
+
 app.get('/',async function(req,res){
     
     res.render('login');
@@ -86,12 +115,20 @@ app.get('/',async function(req,res){
     // });
 })
 
-app.get('/register',function(req,res){
-    res.render('registration');
+
+
+app.post('/regis',function(req,res){
+    console.log(req.body);
+    console.log(req.body.password);
+    if(req.body.password[0]===req.body.password[1]){
+        console.log("Password is Matched");
+    }
 })
+
 
 app.get('/search',function(req,res){
     res.render('search')
+
 })
 
 //    Yha se Error ko dekho
@@ -167,3 +204,9 @@ app.listen(3000,function()
     console.log("Server Has Started On Port 3000");
 })
 
+
+
+// Setting Up Tracking
+app.get('/track',function(req,res){
+    res.render('track');
+})
