@@ -59,17 +59,20 @@ const buyer = mongoose.model('buyer',new mongoose.Schema({
 }))
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-app.get('/',async function(req,res){    
-    const data = new item({
-            name : 'Pen',
-            productDetails : 'Blue Colour Pen',
-            productreviews :['Great Ink' , 'Good Milege'],
-            sellerreviews :['Delivery On time' , 'Great Pricing'],
-            price : 21.99,
-            sellerName : 'GadaStationary',
-            sellerID : 'bnow01'
+app.get('/',async function(req,res){
+    
+    res.render('login');
+    
+    // const data = new item({
+    //         name : 'Pen',
+    //         productDetails : 'Blue Colour Pen',
+    //         productreviews :['Great Ink' , 'Good Milege'],
+    //         sellerreviews :['Delivery On time' , 'Great Pricing'],
+    //         price : 21.99,
+    //         sellerName : 'GadaStationary',
+    //         sellerID : 'bnow01'
             
-        });
+    //     });
 
     // data.save(function(err,succ){
     //     if(!err && succ){
@@ -81,6 +84,10 @@ app.get('/',async function(req,res){
     //     console.log(getData);
     //     res.render('buyer',{getData : getData})
     // });
+})
+
+app.get('/register',function(req,res){
+    res.render('registration');
 })
 
 app.get('/search',function(req,res){
@@ -147,7 +154,8 @@ app.post('/:id',async function(req,res){
     let getId = req.params.id;
     getId = getId+"";
     console.log(getId);
-    const getData =item.findOne({getId},function(err,result){
+    const getData =item.findById(getId,function(err,result){
+        console.log(result.name);
         console.log(result);
         res.render('buynow',{product : result})
     });
