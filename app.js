@@ -57,10 +57,24 @@ const user = mongoose.model('user',new mongoose.Schema({
     password : {
         type : String,
     },
-    orders : {
-        type : Array,
-        default : [],
+    userorders : [{
+        orderId : {type : String},
+        orderstatus : {
+            atSellerHub : {
+                type : Boolean , default : false,
+            },
+            inTransit : {
+                type : Boolean, default : false,
+            },
+            usersHub : {
+                type : Boolean, default : false,
+            },
+            outofDelivery : {
+                type : Boolean, default : false,
+            },
+        }
     }
+    ]
 }));
 
 const seller = mongoose.model('seller' , new mongoose.Schema({
@@ -80,6 +94,20 @@ const seller = mongoose.model('seller' , new mongoose.Schema({
             },
             customerAddress : {
                 type : String,
+            },
+            status : {
+                atSellerHub : {
+                    type : Boolean , default : true,
+                },
+                inTransit : {
+                    type : Boolean, default : false,
+                },
+                usersHub : {
+                    type : Boolean, default : false,
+                },
+                outofDelivery : {
+                    type : Boolean, default : false,
+                },
             }
         }
     ],
@@ -361,11 +389,22 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
     }
     console.log(orderData);
 
+
+    let orders = [{
+        orderId : myproductID,
+        orderstatus : {
+            atSellerHub : true,
+            inTransit : false,
+            usersHub : false,
+            outofDelivery : false,
+        }
+    }
+    ]
     
     // updating Users Order data
     user.findOneAndUpdate(
         { _id : mycustomerID }, 
-        { $push: { orders: myproductID } },
+        { $push: { userorders: orders } },
        function (error, success) {
              if (error || !success) {
                  console.log(error);
@@ -411,6 +450,67 @@ app.post('/review/:productId/:sellerId ',function(req,res){
     // })
 
 })
+
+// ---------------------Constructing-Seller-Login ----------------------
+app.get('/sellerLogin',function(req,res){
+        const tempSeller = new seller({
+        name : "seller01",
+        sellerId : "bnow001",
+        password : 'bnow001',
+        orders : [],
+        sellerReview : [],
+    })
+
+    // tempSeller.save();
+    res.render('sellerLogin');
+})
+
+app.post("/sellerlogin" , function(req,res){
+    let sellerID = req.body.sellerId;
+    let sellerPassword  = req.sellerPassword;
+    seller.findOne({sellerId : sellerID} , function(err, success){
+        if(!err && success){
+            console.log(success);
+            console.log("Seller Found");
+            console.log(success.sellerId);
+            res.render('sellerHome', {sellerID : success.sellerId});
+        }
+        else{
+            res.send('<h1>Seller Not Found</h1>')
+        }
+    })
+})
+
+app.get('/sellerHome' , function(req,res){
+    res.render('sellerHome');
+    let sellerId = req.query;
+        sellerId = sellerId+"";
+    console.log(sellerId);
+
+})
+
+app.get('/updateOrder',function(req,res){
+    console.log(req.query);
+    let sellerID = req.query.id;
+        sellerID = sellerID+"";
+    console.log(sellerID);
+    seller.findOne({sellerId : sellerID} ,  function(err,success){
+        if(!err && success){
+            console.log(success);
+            res.render('updateOrder',{seller : success});
+            // res.render('updateOrder');
+        }
+    })
+})
+
+// seller Homepage
+
+// app.get('/mySellerLog',function(req,res){
+//     console.log("Welcome to seller home");
+//     res.render('mySellerLog')
+// })
+
+
 
 
 app.listen(3000,function()
