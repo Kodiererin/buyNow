@@ -83,7 +83,16 @@ const seller = mongoose.model('seller' , new mongoose.Schema({
             }
         }
     ],
-    sellerReview : [{type : String}],
+    sellerReview : [
+        {
+            sellerReview : {
+                type : String,
+            },
+            sellerRating : {
+                type : Number,
+            }
+        }
+    ]
 }));
 
 
@@ -158,12 +167,58 @@ app.post('/login',function(req,res){
 
 
 app.post('/regis',function(req,res){
-    console.log(req.body);
-    console.log(req.body.password);
+    // console.log(req.body);
+    // console.log(req.body.password);
     if(req.body.password[0]===req.body.password[1]){
         console.log("Password is Matched");
     }
-})
+    const newUser = new user({
+        name : req.body.name,
+        email : req.body.email,
+        password : req.body.password2,
+        orders : [],
+    });
+
+    newUser.save(function(err , result){
+        if(!err && result){
+            console.log(result);
+            console.log("Registration Successful");
+            res.render('registrationSuccessful');
+        }
+    })
+    // console.log(newUser);
+    // user.findOne({email : newUser.email},function(err,success){
+    //     if(!err && success){
+    //         success
+    //         res.render('useralreadyexist');
+    //     }
+    //     else if(!err && !success){
+    //         account = !account;
+    //         res.render('registrationSuccessful');
+    //     }
+    //     else{
+    //         res.send('<h1>Error During Registration</h1>')
+    //     }
+    // })
+    // user.findOne({email : newUser.email},function(err,success){
+    //     if(!err && !success){
+    //         console.log("Data Not Found");
+    //     }
+    //     else if(!err && success){
+    //         console.log("Data found");
+    //         newUser.save(function(err,result){
+    //             if(!err && result){
+    //                 console.log("Data Saved");
+    //             }
+    //         });
+    //     }
+    //     else{
+    //         console.log("Error in the Page");
+    //     }
+    // });
+    // console.log(m);
+
+});
 
 app.post('/registerNew',function(req,res){
     res.render('registration')
@@ -275,10 +330,10 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
     let phonenumber = req.body.phonenumber;
         phonenumber = phonenumber+"";
 
-    const tempSeller = new seller({
-        name : "Jagmohan",
-        sellerId : "bnow001",
-    })
+    // const tempSeller = new seller({
+    //     name : "Jagmohan",
+    //     sellerId : "bnow001",
+    // })
 
     // tempSeller.save(function(err,result){
     //     if(!err && result){
@@ -287,6 +342,7 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
     // });
 
     // Starting the Search operation for items Entry.
+
 
     seller.find({sellerId : mysellerID} , function(err,result){
         if(!err && result){
@@ -305,6 +361,19 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
     }
     console.log(orderData);
 
+    
+    // updating Users Order data
+    user.findOneAndUpdate(
+        { _id : mycustomerID }, 
+        { $push: { orders: myproductID } },
+       function (error, success) {
+             if (error || !success) {
+                 console.log(error);
+             } else {
+                 console.log(success+"User Order Data Updated");
+             }
+         });
+// -----------_---------_----------_--------------_---------------------
     seller.findOneAndUpdate(
         { sellerId : mysellerID }, 
         { $push: { orders: orderData  } },
@@ -313,13 +382,33 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
                  console.log(error);
              } else {
                  console.log(success+"Seller Data Updated");
-                res.render('orderSuccess');
+                res.render('orderSuccess',{ myproductID , mysellerID });
              }
          });
 
 
     // console.log(req.body);
+})
 
+app.post('/review/:productId/:sellerId ',function(req,res){
+    console.log("Reviews Accepteds");
+    console.log(req.body);
+    console.log(req.params);
+
+    // let sellerReview = req.body.seller-review;
+    //     sellerReview=sellerReview+"";
+    // let productReview = req.body.product-review;
+    //     productReview = productReview+"";
+
+    // console.log(sellerReview);
+    // console.log(productReview);
+    // item.findByIdAndUpdate(req.params.productId ,
+    //     { $push: { productreviews : productReview  } , $push: { sellerreviews : sellerReview  }  },
+    //     function(err,accept){
+    //     if(!err && accept){
+    //         console.log("Data Found");
+    //     }
+    // })
 
 })
 

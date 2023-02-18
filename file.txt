@@ -1,33 +1,6 @@
-<div class="product-container" >
-    <div class="product-name"></div>
-    <div class="product-details">Product Details</div>
-    <div class="product-reviews">Product Reviews</div>
-    <div class="product-price">Product Price</div>
-    <div class="seller-info">
-      <div class="seller-name">Seller Name</div>
-      <div class="seller-url">Seller URL</div>
-    </div>
-    <div class="product-buttons">
-      <button class="buy-now">Buy Now</button>
-      <button class="bargain">Contact Seller</button>
-    </div>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- <div class="product-box">
-    <h2>Product Name</h2>
-    <p>Product Description</p>
-    <a href="#" class="button">Buy Now</a>
-</div> -->
+ToDo .
+1. Seller login form.
+2. Seller registratin form.
+3. Review Form.
+4. Implement chatting system from buyer and seller.
+5. 
