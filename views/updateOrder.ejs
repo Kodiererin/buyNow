@@ -53,7 +53,7 @@
       <tr>
         <td><%=seller.orders[i].productId%></td>
         <td><%=seller.orders[i].customerId%></td>
-        <td><button><a href="<%=/:seller/:seller.orders[i].productId/:seller.orders[i].customerId%>">Update</a></button></td>
+        <td><button><a href="/updateTransit?arg1=<%=seller.sellerId%>&arg2=<%=seller.orders[i].productId%>&arg3=<%=seller.orders[i].customerId%>">Update</a></button></td>
       </tr>
       <% } %>
     </tbody>

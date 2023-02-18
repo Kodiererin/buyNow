@@ -512,6 +512,20 @@ app.get('/updateOrder',function(req,res){
 
 
 
+// get request for updating the transit status of the order 
+app.get('/updateTransit',function(req,res){
+    const sellerId = req.query.arg1;
+     const productID= req.query.arg2;
+     const customerID= req.query.arg3;
+     console.log("sellerId "+sellerId);
+     console.log("productId "+productID);
+     console.log("customerId "+customerID);
+     seller.find({sellerID : sellerId }, function(err , success){
+        console.log(success);
+     })
+    res.render('updateTransit' , {customerID , productID})
+})
+
 
 app.listen(3000,function()
 {
