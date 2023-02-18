@@ -45,6 +45,27 @@ const item = mongoose.model('item' ,new mongoose.Schema({
     },
 }));
 
+// ////////////////////-Database-for-Chat-//////////////////////////////////
+const userSchema = mongoose.Schema(
+    {
+      username: {
+        type: String,
+        require: true,
+      },
+      email: {
+        type: String,
+        require: true,
+      },
+      password: {
+        type: String,
+        require: true,
+      },
+    },
+    { timestamps: true }
+  );
+  
+  const usersChat = new mongoose.model("userChat", userSchema);
+
 /////////////////////////////-Creating-Users-Data//////////////////////////////////////////////////////////////////////
 
 const user = mongoose.model('user',new mongoose.Schema({
@@ -78,7 +99,7 @@ const user = mongoose.model('user',new mongoose.Schema({
 }));
 
 const seller = mongoose.model('seller' , new mongoose.Schema({
-    name : {type : String ,},
+    name : {type : String},
     sellerId : {type : String , unique : true },
     password : {type : String },
     orders : [
@@ -337,7 +358,7 @@ app.post('/:productId/:userId',async function(req,res){
     const getData =item.findById(getId,function(err,result){
         // console.log(result.name);
         console.log(result);
-        res.render('buynow',{product : result , getId , userId})
+        res.render('buynow',{ getId , userId,product : result})
     });
 })
 
@@ -529,13 +550,103 @@ app.get('/updateTransit',function(req,res){
     res.render('updateTransit' , {sellerId , customerID , productID })
 })
 
-app.post('/transitForm/:id',function(req,res){
-    console.log("Seller-ID"+req.params);
+app.post('/transitUpdate' ,async function(req,res){
     console.log(req.body);
+    let sellerID = req.body.sellerId;
+        sellerID = sellerID+"";
+    let productID = req.body.productId;
+        productID = productID+"";
+    let customerID = req.body.customerId;
+        customerID = customerID+"";
+    const selectedDeliveryStatus = req.body.delivery_status;
+    console.log(selectedDeliveryStatus);
 
-    res.send('<h1>Data Received</h1>')
+    // const getSeller = await seller.findOne(
+    //     { sellerId: sellerID, 'orders.productId': productID },
+    //     (err, seller) => {
+    //       if (err) {
+    //         console.error(err);
+    //       } else if (!seller) {
+    //         console.log('Seller not found');
+    //       } else {
+    //         const order = seller.orders.find((o) => o.productId === productID);
+    //         console.log(order);
+    //       }
+    //     }
+    //   );
+
+      const getSeller = await seller.findOne(
+        { sellerId: sellerID, 'orders.productId': productID },
+      )
+      console.log(getSeller);
+    //   console.log(getSeller.orders[0]._id);
+
+    let myorderId = getSeller.orders[0]._id;
+
+    let a = false;
+    let b = false;
+    let c = false;
+    let d = false;
+    if(selectedDeliveryStatus.includes('atSeller')){ a = true;}
+    if(selectedDeliveryStatus.includes('inTransit')){ b = true;}
+    if(selectedDeliveryStatus.includes('usersHub')){ c = true;}
+    if(selectedDeliveryStatus.includes('outofDelivery')){ d = true;}
+    console.log(a);
+    console.log(b);
+    console.log(c);
+    console.log(d);
+      const orderId = myorderId;
+        const statusToUpdate = {
+        atSellerHub: a,
+        inTransit: b,
+        usersHub: c,
+        outofDelivery: d,
+        };
+
+        seller.findOneAndUpdate(
+        { "orders._id": orderId },
+        { $set: { "orders.$.status": statusToUpdate } },
+        (err, updatedSeller) => {
+            if (err) {
+            console.error(err);
+            return;
+            }
+            console.log(updatedSeller);
+        }
+        );
+
+        // seller.findOneAndUpdate(
+        //     // Query to find the specific order
+        //     { 
+        //         sellerId: sellerID,
+        //         'orders._id': orderId
+        //     },
+        //     // Update to be applied
+        //     {
+        //         $set: {
+        //             'orders.$.status.atSellerHub': false,
+        //             'orders.$.status.inTransit': true
+        //         }
+        //     },
+        //     // Options for the update (optional)
+        //     {
+        //         new: true // Return the updated document
+        //     },
+        //     // Callback function to handle the result
+        //     (err, updatedSeller) => {
+        //         if (err) {
+        //             console.log(err);
+        //             // Handle the error
+        //         } else {
+        //             console.log(updatedSeller);
+        //             // Handle the updated seller document
+        //         }
+        //     }
+        // );
+    
+
+    res.send('<h1>Updated Transit Status</h1>')
 })
-
 
 app.listen(3000,function()
 {
