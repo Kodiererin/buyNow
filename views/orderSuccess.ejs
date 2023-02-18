@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Review and Rating Form</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+          
+          h1 {
+            margin-top: 0;
+            margin-bottom: 20px;
+          }
+          
+          .form-group {
+            margin-bottom: 20px;
+          }
+          
+          label {
+            font-weight: bold;
+          }
+          
+          textarea {
+            resize: vertical;
+          }
+          
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Review and Rating Form</h1>
+    <form action="/review/<%=myproductID%>/<%=mysellerID%>" method="POST">
+      <div class="form-group">
+        <input type="text" name="productid" id="" value="<%=myproductID%>" hidden>
+        <input type="text" name="sellerid" id="" value="<%=mysellerID%>" hidden>
+        <label for="seller-review">Seller Revie</label>
+        <select class="form-control" id="seller-rating" name="seller-rating">
+          <option value="5">5 stars</option>
+          <option value="4">4 stars</option>
+          <option value="3">3 stars</option>
+          <option value="2">2 stars</option>
+          <option value="1">1 star</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="seller-review">Seller Review</label>
+        <textarea class="form-control" id="seller-comment" name="seller-review" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="product-rating">Product Review</label>
+        <select class="form-control" id="product-rating" name="product-rating" >
+          <option value="5">5 stars</option>
+          <option value="4">4 stars</option>
+          <option value="3">3 stars</option>
+          <option value="2">2 stars</option>
+          <option value="1">1 star</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="product-review">Product Review</label>
+        <textarea class="form-control" id="product-review" name="product-review" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</body>
+</html>
