@@ -335,7 +335,7 @@ app.post('/:productId/:userId',async function(req,res){
 
 
     const getData =item.findById(getId,function(err,result){
-        console.log(result.name);
+        // console.log(result.name);
         console.log(result);
         res.render('buynow',{product : result , getId , userId})
     });
@@ -514,16 +514,26 @@ app.get('/updateOrder',function(req,res){
 
 // get request for updating the transit status of the order 
 app.get('/updateTransit',function(req,res){
-    const sellerId = req.query.arg1;
-     const productID= req.query.arg2;
-     const customerID= req.query.arg3;
+    let sellerId = req.query.arg1;
+        sellerId = sellerId+"";
+     let productID= req.query.arg2;
+        productID = productID+"";
+     let customerID= req.query.arg3;
+        customerID = customerID+"";
      console.log("sellerId "+sellerId);
      console.log("productId "+productID);
      console.log("customerId "+customerID);
-     seller.find({sellerID : sellerId }, function(err , success){
-        console.log(success);
-     })
-    res.render('updateTransit' , {customerID , productID})
+    //  seller.find({sellerID : sellerId }, function(err , success){
+    //     console.log(success);
+    //  })
+    res.render('updateTransit' , {sellerId , customerID , productID })
+})
+
+app.post('/transitForm/:id',function(req,res){
+    console.log("Seller-ID"+req.params);
+    console.log(req.body);
+
+    res.send('<h1>Data Received</h1>')
 })
 
 

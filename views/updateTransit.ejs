@@ -14,7 +14,7 @@
 <body>
     <div class="container mx-auto my-8">
         <h1 class="text-2xl font-bold mb-4">Order Transit</h1>
-        <form>
+        <form class=""  action="/transitForm/:<%=sellerId%>" method="POST">
             <div class="form-group">
                 <label for="customer-id" class="text-sm font-medium">Customer ID</label>
                 <input type="text" class="form-control w-full py-2 px-3 text-gray-700 border rounded leading-tight focus:outline-none focus:shadow-outline" 
@@ -28,20 +28,20 @@
             <div class="form-group">
                 <label class="text-sm font-medium">Status Update</label><br>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="processing" name="status" value="processing">
-                    <label class="form-check-label" for="processing">Processing</label>
+                    <input class="form-check-input" type="checkbox" id="processing" name="sellerHub" value="processing">
+                    <label class="form-check-label" for="processing">At Seller Hub</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="shipped" name="status" value="shipped">
-                    <label class="form-check-label" for="shipped">Shipped</label>
+                    <input class="form-check-input" type="checkbox" id="shipped" name="inTransit" value="shipped">
+                    <label class="form-check-label" for="shipped">In Transit</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="delivered" name="status" value="delivered">
-                    <label class="form-check-label" for="delivered">Delivered</label>
+                    <input class="form-check-input" type="checkbox" id="delivered" name="userHub" value="delivered">
+                    <label class="form-check-label" for="delivered">At User Hub</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="cancelled" name="status" value="cancelled">
-                    <label class="form-check-label" for="cancelled">Cancelled</label>
+                    <input class="form-check-input" type="checkbox" id="cancelled" name="outofdelivery" value="cancelled">
+                    <label class="form-check-label" for="cancelled">Out of Delivery</label>
                 </div>
             </div>
             <button type="submit" class="btn btn-primary px-4 py-2 mt-4">Update</button>
