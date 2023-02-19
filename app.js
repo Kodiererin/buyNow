@@ -340,15 +340,21 @@ const myItem = req.body.searchItem;
    }
 })
 
-// Setting up for client seller chat
+// Setting up for client seller chat    Check and Fix the Code
 app.post('/contact' , function(req,res){
   // Send a response to the client indicating that the server has started
-  res.sendFile(__dirname+'/index.html');
+//   res.sendFile(__dirname+'/index.html');                 // Check from here #_Chat Feature
+    res.render('index');
+
+
 })
 
 app.get('/contact' , function(req,res){
-    console.log(__dirname);
-    res.sendFile(__dirname + '/index.html');
+    // console.log(__dirname);
+    // res.sendFile(__dirname + '/index.html');
+
+
+    res.render('index');                // temporary change
 })
 
 // // Setting up for client seller chat
@@ -543,7 +549,7 @@ app.post('/review',function(req,res){
 
     console.log("Reviews Accepteds");
     seller.updateOne(
-        { sellerId: sellerID }, // filter to find the seller with the given ID
+        { sellerId: sellerID }, 
         { $push: { sellerReview: { sellerReview: sellerreview, sellerRating: sellerrating } } },
         (err, res) => {
           if (err) throw err;
@@ -790,8 +796,8 @@ app.post('/transitUpdate' ,async function(req,res){
         console.log(update);
 
         const options = {
-        arrayFilters: [{ 'elem.orderId': userorderId }] // Find the array element with the specified order ID
-        };
+        arrayFilters: [{ 'elem.orderId': userorderId }]}
+        
 
         console.log(options);
 
@@ -816,7 +822,7 @@ app.post('/orderTrack' , function(req,res){
     let orderNo = req.body.orderNumber;
     orderNo = orderNo+"";
 
-    const orderIdToFind = orderNo; // Replace with the orderId you want to find
+    const orderIdToFind = orderNo; 
 
     user.findOne({ 'userorders.orderId': orderNo }, (err, doc) => {
     if (err) {
@@ -847,6 +853,13 @@ app.post('/orderTrack' , function(req,res){
     });
 
 }) 
+
+// Setting again for reviews (already the file has been mage but this is for satisfaction)
+
+app.get('/rateNreview',function(req,res){
+    res.render('ratenReview');
+})
+app.po
 
 
 app.get('/track' , function(req,res){
