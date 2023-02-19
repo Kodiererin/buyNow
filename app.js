@@ -859,7 +859,39 @@ app.post('/orderTrack' , function(req,res){
 app.get('/rateNreview',function(req,res){
     res.render('ratenReview');
 })
-app.po
+app.post('/updateReviews' , async function(req , res){
+    console.log(req.body);
+    let getSellerID = req.body.sellerId;
+        getSellerID =  getSellerID+"";
+    let getProductID = req.body.productId;
+        getProductID = getProductID+"";
+    console.log('====================================');
+    console.log("Product Id is "+getProductID);
+    console.log('====================================');
+    let review = req.body.review;
+        review = review+"";
+    let rating = req.body.rating;
+        rating = rating+"";
+    let getItem = await item.findById(getProductID);
+    getItem = getItem.productreviews.push(review);
+    // getItem.productreviews.save();
+
+    item.findById(getProductID, function(err, foundItem) {
+    if (err) {
+        console.log(err);
+    } else {
+        foundItem.productreviews.push(review);
+        foundItem.save(function(err, updatedItem) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(updatedItem);
+        }
+        });
+    }
+    });
+
+})
 
 
 app.get('/track' , function(req,res){
