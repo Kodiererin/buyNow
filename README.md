@@ -1,5 +1,5 @@
 
-# Shopping-Page
+# Shopping-Website
 
 Hi, this is a shopping webpage name buyNow where user can track ,search and buy the products,even they can contact the seller also. 
 
