@@ -33,36 +33,24 @@
 <body>
   <div class="container">
     <h1>Review and Rating Form</h1>
-    <form action="/review/<%=myproductID%>/<%=mysellerID%>" method="POST">
+    <form action="/review" method="POST">
       <div class="form-group">
         <input type="text" name="productid" id="" value="<%=myproductID%>" hidden>
         <input type="text" name="sellerid" id="" value="<%=mysellerID%>" hidden>
-        <label for="seller-review">Seller Revie</label>
-        <select class="form-control" id="seller-rating" name="seller-rating">
-          <option value="5">5 stars</option>
-          <option value="4">4 stars</option>
-          <option value="3">3 stars</option>
-          <option value="2">2 stars</option>
-          <option value="1">1 star</option>
-        </select>
+        <label for="seller-review">Seller Rating</label>
+        <input type="number" name="sellerRating" id="">
       </div>
       <div class="form-group">
         <label for="seller-review">Seller Review</label>
-        <textarea class="form-control" id="seller-comment" name="seller-review" rows="3"></textarea>
+        <input type="text" name="sellerReview">
       </div>
       <div class="form-group">
-        <label for="product-rating">Product Review</label>
-        <select class="form-control" id="product-rating" name="product-rating" >
-          <option value="5">5 stars</option>
-          <option value="4">4 stars</option>
-          <option value="3">3 stars</option>
-          <option value="2">2 stars</option>
-          <option value="1">1 star</option>
-        </select>
+        <label for="product-rating">Product Rating</label>
+        <input type="number" name="productRating" id="">
       </div>
       <div class="form-group">
         <label for="product-review">Product Review</label>
-        <textarea class="form-control" id="product-review" name="product-review" rows="3"></textarea>
+        <input type="text" name="productReview">
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>

@@ -4,7 +4,8 @@ const app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
 app.set('view engine','ejs');
-const mongoose = require('mongoose')  
+const mongoose = require('mongoose')
+const { spawn } = require('child_process');  
 
 main().catch(err => console.log(err));
 
@@ -138,7 +139,7 @@ const seller = mongoose.model('seller' , new mongoose.Schema({
                 type : String,
             },
             sellerRating : {
-                type : Number,
+                type : String,
             }
         }
     ]
@@ -306,6 +307,37 @@ const myItem = req.body.searchItem;
     });
    }
 })
+
+// Setting up for client seller chat
+app.post('/contact' , function(req,res){
+  // Send a response to the client indicating that the server has started
+  res.sendFile(__dirname+'/index.html');
+})
+
+app.get('/contact' , function(req,res){
+    console.log(__dirname);
+    res.sendFile(__dirname + '/index.html');
+})
+
+// // Setting up for client seller chat
+// app.post('/contact' , function(req,res){
+//     // Spawn a new process for running the server file
+//   const child = spawn('node', ['server.js']);
+//     console.log('====================================');
+//     console.log("Chat Server Starting");
+//     console.log('====================================');
+
+
+//   // Listen for any errors that occur in the child process
+//   child.on('error', (err) => {
+//     console.error(err);
+//   });
+
+
+//   // Send a response to the client indicating that the server has started
+//   res.sendFile(__dirname+'/index.html');
+// })
+
 // app.post('/search',async function(req,res){
 //    console.log(req.body.searchItem);
 //    const myitem =  await item.findOne({name: req.body.searchItem});
@@ -450,10 +482,43 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
     // console.log(req.body);
 })
 
-app.post('/review/:productId/:sellerId ',function(req,res){
-    console.log("Reviews Accepteds");
+app.post('/review',function(req,res){
+    let sellerID = req.body.sellerId;
+        sellerID = sellerID+"";
+    let productID = req.body.productId;
+        productID = productID+"";
+    // let seller-rating = req.
+    let productreview = req.body.productReview;
+        productreview = productreview+"";
+    let sellerreview = req.body.sellerReview;
+    sellerreview = sellerreview+"";
+    let sellerrating = req.body.sellerRating;
+    sellerrating = sellerrating+"";
+    let productrating = req.body.productRating;
+    productrating = productrating+"";
     console.log(req.body);
-    console.log(req.params);
+
+
+
+    console.log("Reviews Accepteds");
+    seller.updateOne(
+        { sellerId: sellerID }, // filter to find the seller with the given ID
+        { $push: { sellerReview: { sellerReview: sellerreview, sellerRating: sellerrating } } },
+        (err, res) => {
+          if (err) throw err;
+          console.log(res);
+        }
+      );
+      
+      seller.findOneAndUpdate(
+        { 'orders.productId': productID }, // filter to find the order with the given product ID
+        { $set: { 'orders.$.productReview': productreview, 'orders.$.productRating': productrating } },
+        (err, res) => {
+          if (err) throw err;
+          console.log(res);
+        }
+      );
+      
 
     // let sellerReview = req.body.seller-review;
     //     sellerReview=sellerReview+"";
