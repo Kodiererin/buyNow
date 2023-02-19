@@ -68,9 +68,9 @@
               </table>
           </div>
           <div class="seller-reviews">
-              <table>
+              <table><p>Product Reviews : </p>
               <% for (var j = 0; j < getData[i].sellerreviews.length; j++) { %>
-                  <tr><td><%= getData[i].sellerreviews[j] %></td></tr>
+                  <tr><td><%= if(j<5){ getData[i].sellerreviews[j] %>}</td></tr>
                   <% } %>
               </table>
           </div>
