@@ -214,6 +214,10 @@ app.post('/login',function(req,res){
 
 })
 
+app.get('/sellerRegister' , function(req,res){
+    res.render('sellerRegister');
+})
+
 
 
 app.post('/regis',function(req,res){
@@ -281,6 +285,20 @@ app.get('/search',function(req,res){
     // console.log(req.body);
     console.log(req.params);
     // res.redirect(`/search?id=${userId}`);
+})
+
+app.post('/regisseller' , function(req,res){
+    console.log(req.body);
+    const newUser = new seller({
+        name : req.body.name,
+        sellerId : req.body.sellerid,
+        password : req.body.password,
+    });
+    newUser.save(function(err,saved){
+        if(!err && saved){
+            console.log(saved);
+        }
+    })
 })
 
 //    Yha se Error ko dekho
@@ -510,14 +528,14 @@ app.post('/review',function(req,res){
         }
       );
       
-      seller.findOneAndUpdate(
-        { 'orders.productId': productID }, // filter to find the order with the given product ID
-        { $set: { 'orders.$.productReview': productreview, 'orders.$.productRating': productrating } },
-        (err, res) => {
-          if (err) throw err;
-          console.log(res);
-        }
-      );
+    //   seller.findOneAndUpdate(
+    //     { 'orders.productId': productID }, // filter to find the order with the given product ID
+    //     { $set: { 'orders.$.productReview': productreview, 'orders.$.productRating': productrating } },
+    //     (err, res) => {
+    //       if (err) throw err;
+    //       console.log(res);
+    //     }
+    //   );
       
 
     // let sellerReview = req.body.seller-review;
@@ -708,9 +726,83 @@ app.post('/transitUpdate' ,async function(req,res){
         //         }
         //     }
         // );
-    
+
+
+
+        const userId = customerID; // Replace with the ID of the user you want to update
+        const userorderId = orderId; // Replace with the ID of the order you want to update
+
+        const update = {
+        $set: {statusToUpdate}
+        };
+
+        const options = {
+        arrayFilters: [{ 'elem.orderId': orderId }] // Find the array element with the specified order ID
+        };
+
+        const result = await user.updateOne({ _id: userId }, update, options);
+        console.log(result);
+
+
 
     res.send('<h1>Updated Transit Status</h1>')
+})
+
+
+
+// Adding Tracking Option
+
+app.get('/trackOrder' , function(req,res){
+    res.render('orderTracking');
+}) 
+
+app.post('/orderTrack' , function(req,res){
+    console.log(req.body);
+    console.log('====================================');
+    console.log("Tracking Order");
+    console.log('====================================');
+    let orderNo = req.body.orderNumber;
+    orderNo = orderNo+"";
+
+    const orderIdToFind = orderNo; // Replace with the orderId you want to find
+
+    user.findOne({ 'userorders.orderId': orderNo }, (err, doc) => {
+    if (err) {
+        res.send('<h1>The Order Does not exist</h1>')
+        console.log(err);
+    } else {
+    const orderStatus = doc.userorders[0].orderstatus;
+        console.log(orderStatus);
+        let val = 20;
+        let lastData = "";
+        if(orderStatus.atSellerHub==true){
+            val = 25; lastData = "At Seller Hub"
+        }
+        else if(orderStatus.inTransit == true){
+            val = 50; lastData = "Under Transit";
+        }
+        else if(orderStatus.usersHub==true){
+            val = 80 ; lastData = "At your Nearest Hub ";
+        }
+        else if(orderStatus.outofDelivery==true){
+            val = 90 ; lastData = "Out Of Delivery ";
+        }
+        else{
+            val = 100 ; lastData = "Delivered";
+        }
+        res.render('track' , {orderNo , lastData , val})
+    }
+    });
+
+
+
+
+
+}) 
+
+
+app.get('/track' , function(req,res){
+    res.render('track');
 })
 
 app.listen(3000,function()
@@ -720,7 +812,3 @@ app.listen(3000,function()
 
 
 
-// Setting Up Tracking
-app.get('/track',function(req,res){
-    res.render('track');
-})
