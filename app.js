@@ -324,6 +324,20 @@ const myItem = req.body.searchItem;
             }
     });
    }
+   else{
+        const getitem =  item.find({name: myItem},function(err,result){
+            console.log(result);
+            if(!err){
+                if(result!=[] || result!=null || result!=undefined){
+                    console.log(result);
+                    res.render('buyer',{ItemName : myItem , getData : result , getUserId});
+                }
+                else{
+                    res.render('productnotfound');
+                }
+            }
+    });
+   }
 })
 
 // Setting up for client seller chat
@@ -503,15 +517,24 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
 app.post('/review',function(req,res){
     let sellerID = req.body.sellerId;
         sellerID = sellerID+"";
+    
+    console.log('====================================');
+    console.log(req.body);
+    console.log('====================================');
+
     let productID = req.body.productId;
         productID = productID+"";
+
     // let seller-rating = req.
     let productreview = req.body.productReview;
         productreview = productreview+"";
+
     let sellerreview = req.body.sellerReview;
     sellerreview = sellerreview+"";
+
     let sellerrating = req.body.sellerRating;
     sellerrating = sellerrating+"";
+
     let productrating = req.body.productRating;
     productrating = productrating+"";
     console.log(req.body);
@@ -527,6 +550,31 @@ app.post('/review',function(req,res){
           console.log(res);
         }
       );
+
+
+    //   --------------BSON Error----------------------
+    //   var id = mongoose.Types.ObjectId(productID);
+        var hex = /[0-9A-Fa-f]{6}/g;
+        id = (hex.test(productID))? ObjectId(productID) : productID;
+      item.updateOne(
+        { _id: id },
+        { 
+          $push: {
+            productreviews: productreview,
+            sellerreviews: sellerrating,
+          } // push the new data to the productreviews and sellerreviews arrays
+        },
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+        }
+      );
+      
+      //   --------------BSON Error----------------------
+      
       
     //   seller.findOneAndUpdate(
     //     { 'orders.productId': productID }, // filter to find the order with the given product ID
@@ -729,23 +777,27 @@ app.post('/transitUpdate' ,async function(req,res){
 
 
 
-        const userId = customerID; // Replace with the ID of the user you want to update
-        const userorderId = orderId; // Replace with the ID of the order you want to update
+        const userId = customerID; 
+        const userorderId = orderID; 
+        console.log(userId);
+        console.log(userorderId);
+
 
         const update = {
         $set: {statusToUpdate}
         };
 
+        console.log(update);
+
         const options = {
-        arrayFilters: [{ 'elem.orderId': orderId }] // Find the array element with the specified order ID
+        arrayFilters: [{ 'elem.orderId': userorderId }] // Find the array element with the specified order ID
         };
+
+        console.log(options);
 
         const result = await user.updateOne({ _id: userId }, update, options);
         console.log(result);
-
-
-
-    res.send('<h1>Updated Transit Status</h1>')
+        res.render('lastPage');
 })
 
 
@@ -793,10 +845,6 @@ app.post('/orderTrack' , function(req,res){
         res.render('track' , {orderNo , lastData , val})
     }
     });
-
-
-
-
 
 }) 
 
