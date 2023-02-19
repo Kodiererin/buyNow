@@ -4,7 +4,8 @@ const app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.static("public"));
 app.set('view engine','ejs');
-const mongoose = require('mongoose')  
+const mongoose = require('mongoose')
+const { spawn } = require('child_process');  
 
 main().catch(err => console.log(err));
 
@@ -45,6 +46,27 @@ const item = mongoose.model('item' ,new mongoose.Schema({
     },
 }));
 
+// ////////////////////-Database-for-Chat-//////////////////////////////////
+const userSchema = mongoose.Schema(
+    {
+      username: {
+        type: String,
+        require: true,
+      },
+      email: {
+        type: String,
+        require: true,
+      },
+      password: {
+        type: String,
+        require: true,
+      },
+    },
+    { timestamps: true }
+  );
+  
+  const usersChat = new mongoose.model("userChat", userSchema);
+
 /////////////////////////////-Creating-Users-Data//////////////////////////////////////////////////////////////////////
 
 const user = mongoose.model('user',new mongoose.Schema({
@@ -78,7 +100,7 @@ const user = mongoose.model('user',new mongoose.Schema({
 }));
 
 const seller = mongoose.model('seller' , new mongoose.Schema({
-    name : {type : String ,},
+    name : {type : String},
     sellerId : {type : String , unique : true },
     password : {type : String },
     orders : [
@@ -117,7 +139,7 @@ const seller = mongoose.model('seller' , new mongoose.Schema({
                 type : String,
             },
             sellerRating : {
-                type : Number,
+                type : String,
             }
         }
     ]
@@ -192,6 +214,10 @@ app.post('/login',function(req,res){
 
 })
 
+app.get('/sellerRegister' , function(req,res){
+    res.render('sellerRegister');
+})
+
 
 
 app.post('/regis',function(req,res){
@@ -261,6 +287,20 @@ app.get('/search',function(req,res){
     // res.redirect(`/search?id=${userId}`);
 })
 
+app.post('/regisseller' , function(req,res){
+    console.log(req.body);
+    const newUser = new seller({
+        name : req.body.name,
+        sellerId : req.body.sellerid,
+        password : req.body.password,
+    });
+    newUser.save(function(err,saved){
+        if(!err && saved){
+            console.log(saved);
+        }
+    })
+})
+
 //    Yha se Error ko dekho
 app.post('/search',async function(req,res){
     // console.log(userId);
@@ -284,7 +324,52 @@ const myItem = req.body.searchItem;
             }
     });
    }
+   else{
+        const getitem =  item.find({name: myItem},function(err,result){
+            console.log(result);
+            if(!err){
+                if(result!=[] || result!=null || result!=undefined){
+                    console.log(result);
+                    res.render('buyer',{ItemName : myItem , getData : result , getUserId});
+                }
+                else{
+                    res.render('productnotfound');
+                }
+            }
+    });
+   }
 })
+
+// Setting up for client seller chat
+app.post('/contact' , function(req,res){
+  // Send a response to the client indicating that the server has started
+  res.sendFile(__dirname+'/index.html');
+})
+
+app.get('/contact' , function(req,res){
+    console.log(__dirname);
+    res.sendFile(__dirname + '/index.html');
+})
+
+// // Setting up for client seller chat
+// app.post('/contact' , function(req,res){
+//     // Spawn a new process for running the server file
+//   const child = spawn('node', ['server.js']);
+//     console.log('====================================');
+//     console.log("Chat Server Starting");
+//     console.log('====================================');
+
+
+//   // Listen for any errors that occur in the child process
+//   child.on('error', (err) => {
+//     console.error(err);
+//   });
+
+
+//   // Send a response to the client indicating that the server has started
+//   res.sendFile(__dirname+'/index.html');
+// })
+
 // app.post('/search',async function(req,res){
 //    console.log(req.body.searchItem);
 //    const myitem =  await item.findOne({name: req.body.searchItem});
@@ -337,7 +422,7 @@ app.post('/:productId/:userId',async function(req,res){
     const getData =item.findById(getId,function(err,result){
         // console.log(result.name);
         console.log(result);
-        res.render('buynow',{product : result , getId , userId})
+        res.render('buynow',{ getId , userId,product : result})
     });
 })
 
@@ -429,10 +514,77 @@ app.post('/order/:productId/:userId/:sellerID' , function(req,res){
     // console.log(req.body);
 })
 
-app.post('/review/:productId/:sellerId ',function(req,res){
-    console.log("Reviews Accepteds");
+app.post('/review',function(req,res){
+    let sellerID = req.body.sellerId;
+        sellerID = sellerID+"";
+    
+    console.log('====================================');
     console.log(req.body);
-    console.log(req.params);
+    console.log('====================================');
+
+    let productID = req.body.productId;
+        productID = productID+"";
+
+    // let seller-rating = req.
+    let productreview = req.body.productReview;
+        productreview = productreview+"";
+
+    let sellerreview = req.body.sellerReview;
+    sellerreview = sellerreview+"";
+
+    let sellerrating = req.body.sellerRating;
+    sellerrating = sellerrating+"";
+
+    let productrating = req.body.productRating;
+    productrating = productrating+"";
+    console.log(req.body);
+
+
+
+    console.log("Reviews Accepteds");
+    seller.updateOne(
+        { sellerId: sellerID }, // filter to find the seller with the given ID
+        { $push: { sellerReview: { sellerReview: sellerreview, sellerRating: sellerrating } } },
+        (err, res) => {
+          if (err) throw err;
+          console.log(res);
+        }
+      );
+
+
+    //   --------------BSON Error----------------------
+    //   var id = mongoose.Types.ObjectId(productID);
+        var hex = /[0-9A-Fa-f]{6}/g;
+        id = (hex.test(productID))? ObjectId(productID) : productID;
+      item.updateOne(
+        { _id: id },
+        { 
+          $push: {
+            productreviews: productreview,
+            sellerreviews: sellerrating,
+          } // push the new data to the productreviews and sellerreviews arrays
+        },
+        (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(result);
+          }
+        }
+      );
+      
+      //   --------------BSON Error----------------------
+      
+      
+    //   seller.findOneAndUpdate(
+    //     { 'orders.productId': productID }, // filter to find the order with the given product ID
+    //     { $set: { 'orders.$.productReview': productreview, 'orders.$.productRating': productrating } },
+    //     (err, res) => {
+    //       if (err) throw err;
+    //       console.log(res);
+    //     }
+    //   );
+      
 
     // let sellerReview = req.body.seller-review;
     //     sellerReview=sellerReview+"";
@@ -529,13 +681,177 @@ app.get('/updateTransit',function(req,res){
     res.render('updateTransit' , {sellerId , customerID , productID })
 })
 
-app.post('/transitForm/:id',function(req,res){
-    console.log("Seller-ID"+req.params);
+app.post('/transitUpdate' ,async function(req,res){
     console.log(req.body);
+    let sellerID = req.body.sellerId;
+        sellerID = sellerID+"";
+    let productID = req.body.productId;
+        productID = productID+"";
+    let customerID = req.body.customerId;
+        customerID = customerID+"";
+    const selectedDeliveryStatus = req.body.delivery_status;
+    console.log(selectedDeliveryStatus);
 
-    res.send('<h1>Data Received</h1>')
+    // const getSeller = await seller.findOne(
+    //     { sellerId: sellerID, 'orders.productId': productID },
+    //     (err, seller) => {
+    //       if (err) {
+    //         console.error(err);
+    //       } else if (!seller) {
+    //         console.log('Seller not found');
+    //       } else {
+    //         const order = seller.orders.find((o) => o.productId === productID);
+    //         console.log(order);
+    //       }
+    //     }
+    //   );
+
+      const getSeller = await seller.findOne(
+        { sellerId: sellerID, 'orders.productId': productID },
+      )
+      console.log(getSeller);
+    //   console.log(getSeller.orders[0]._id);
+
+    let myorderId = getSeller.orders[0]._id;
+
+    let a = false;
+    let b = false;
+    let c = false;
+    let d = false;
+    if(selectedDeliveryStatus.includes('atSeller')){ a = true;}
+    if(selectedDeliveryStatus.includes('inTransit')){ b = true;}
+    if(selectedDeliveryStatus.includes('usersHub')){ c = true;}
+    if(selectedDeliveryStatus.includes('outofDelivery')){ d = true;}
+    console.log(a);
+    console.log(b);
+    console.log(c);
+    console.log(d);
+      const orderId = myorderId;
+        const statusToUpdate = {
+        atSellerHub: a,
+        inTransit: b,
+        usersHub: c,
+        outofDelivery: d,
+        };
+
+        seller.findOneAndUpdate(
+        { "orders._id": orderId },
+        { $set: { "orders.$.status": statusToUpdate } },
+        (err, updatedSeller) => {
+            if (err) {
+            console.error(err);
+            return;
+            }
+            console.log(updatedSeller);
+        }
+        );
+
+        // seller.findOneAndUpdate(
+        //     // Query to find the specific order
+        //     { 
+        //         sellerId: sellerID,
+        //         'orders._id': orderId
+        //     },
+        //     // Update to be applied
+        //     {
+        //         $set: {
+        //             'orders.$.status.atSellerHub': false,
+        //             'orders.$.status.inTransit': true
+        //         }
+        //     },
+        //     // Options for the update (optional)
+        //     {
+        //         new: true // Return the updated document
+        //     },
+        //     // Callback function to handle the result
+        //     (err, updatedSeller) => {
+        //         if (err) {
+        //             console.log(err);
+        //             // Handle the error
+        //         } else {
+        //             console.log(updatedSeller);
+        //             // Handle the updated seller document
+        //         }
+        //     }
+        // );
+
+
+
+        const userId = customerID; 
+        const userorderId = orderID; 
+        console.log(userId);
+        console.log(userorderId);
+
+
+        const update = {
+        $set: {statusToUpdate}
+        };
+
+        console.log(update);
+
+        const options = {
+        arrayFilters: [{ 'elem.orderId': userorderId }] // Find the array element with the specified order ID
+        };
+
+        console.log(options);
+
+        const result = await user.updateOne({ _id: userId }, update, options);
+        console.log(result);
+        res.render('lastPage');
 })
 
+
+
+// Adding Tracking Option
+
+app.get('/trackOrder' , function(req,res){
+    res.render('orderTracking');
+}) 
+
+app.post('/orderTrack' , function(req,res){
+    console.log(req.body);
+    console.log('====================================');
+    console.log("Tracking Order");
+    console.log('====================================');
+    let orderNo = req.body.orderNumber;
+    orderNo = orderNo+"";
+
+    const orderIdToFind = orderNo; // Replace with the orderId you want to find
+
+    user.findOne({ 'userorders.orderId': orderNo }, (err, doc) => {
+    if (err) {
+        res.send('<h1>The Order Does not exist</h1>')
+        console.log(err);
+    } else {
+    const orderStatus = doc.userorders[0].orderstatus;
+        console.log(orderStatus);
+        let val = 20;
+        let lastData = "";
+        if(orderStatus.atSellerHub==true){
+            val = 25; lastData = "At Seller Hub"
+        }
+        else if(orderStatus.inTransit == true){
+            val = 50; lastData = "Under Transit";
+        }
+        else if(orderStatus.usersHub==true){
+            val = 80 ; lastData = "At your Nearest Hub ";
+        }
+        else if(orderStatus.outofDelivery==true){
+            val = 90 ; lastData = "Out Of Delivery ";
+        }
+        else{
+            val = 100 ; lastData = "Delivered";
+        }
+        res.render('track' , {orderNo , lastData , val})
+    }
+    });
+
+}) 
+
+
+app.get('/track' , function(req,res){
+    res.render('track');
+})
 
 app.listen(3000,function()
 {
@@ -544,7 +860,3 @@ app.listen(3000,function()
 
 
 
-// Setting Up Tracking
-app.get('/track',function(req,res){
-    res.render('track');
-})
