@@ -1,7 +1,7 @@
 
 # Shopping-Page
 
-Hi, this is a shopping webpage name buyNow where user can track ,search and buy the products,even they can contact the seller also. 
+Hi, this is a shopping webpage name buyNow where user can track ,search and buy the products,even they can contact the seller also(chat feature is in progress). 
 
 Also, seller can login/register themselves and can update,add ,modify the products. They can even contact the buyer to sell their products. 
 
