@@ -96,7 +96,8 @@ const user = mongoose.model('user',new mongoose.Schema({
             },
         }
     }
-    ]
+    ],
+    userCart : [item]
 }));
 
 const seller = mongoose.model('seller' , new mongoose.Schema({
